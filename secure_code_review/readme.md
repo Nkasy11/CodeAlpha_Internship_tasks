@@ -1,0 +1,73 @@
+                 TASK 3 CYBERSECURITY
+
+Choose a programming language and application. Review the code for security vulnerabilities and provide recommendations for secure coding practices. Use tools like static code analyzers or mamual code review.
+Programming language: python
+Application: open-source web app CTFd git hub
+Static code analyzers: Bandit and Safety
+Recommendations for secure coding: Bandit
+Issues Found: Bandit detected security issues in the Python files within the project. 
+Use of assert detected: For assert, it mentions that the code will be removed when compiled to optimized byte code. 
+•	Severity Level: Indicates the seriousness of the issue (Low, Medium, or High). 
+•	CWE (Common Weakness Enumeration): A standardized identifier for software weaknesses, linking to detailed information about the issue. For example, CWE-703 indicates “Improper Check or Handling of Exceptional Conditions.
+Metrics Summary: 
+     • Code scanned: Bandit analyzed a total of 30,226 lines of Python code.
+     • Total lines skipped: Indicates the number of lines ignored due to the use of #nosec tags (used to skip lines that are explicitly safe). 
+     • Issues by Severity:
+          • Low: 2,417 issues.
+          • Medium: 3 issues. 
+          • High: 3 issues. 
+      • Issues by Confidence: Confidence indicates how certain Bandit is that the identified issue is an actual problem. The output shows: 
+          • Low Confidence: 3. 
+          • Medium Confidence: 97. 
+          • High Confidence: 2,323. 
+
+Specific Issues: 
+    • The issues shown on the screen relate to the test_validators.py file. Bandit flagged multiple uses of the assert statement as a security risk. This is because assert statements are stripped from bytecode in optimized mode (python -O), meaning they won’t execute in production.
+ 
+Recommendations: 
+
+1.	Replace assert with proper exception handling to ensure the checks remain in the production environment. Example: 
+
+# Instead of: 
+assert validate_email("example@example.com")
+
+ # Use: 
+if not validate_email("example@example.com"): raise ValueError("Invalid email") 
+
+2.	Fix High-Severity Issues: Focus on addressing the high-severity issues first, as they pose the greatest risk. 
+3.	Review CWE References: •Look up the linked CWE IDs to understand the weaknesses and apply best practices for fixing them.
+
+For Safety:
+
+The Safety scan results indicate outdated versions of Werkzeug and WTForms with identified vulnerabilities. 
+Below are secure coding practices that directly address the issues shown in the scan: 
+1.	Fix Vulnerabilities by Updating Dependencies: Always use the latest stable versions of dependencies unless there’s a specific reason not to. For this specific case, upgrade Werkzeug to 3.0.6 to fix 7 vulnerabilities. Also upgrade WTForms to 3.0.0a1 to resolve the single vulnerability related to unsafe characters in label text. 
+Example: 
+pip install --upgrade werkzeug==3.0.6
+pip install --upgrade wtforms==3.0.0a1 
+2.	Input Validation and Sanitization: Vulnerabilities in WTForms (related to CWE-116) suggest the need for better handling of user inputs. To ensure secure coding:
+ • Always validate user inputs for length, type, and format. 
+ • Use WTForms validators for common checks: 
+ from wtforms import Form, StringField, validators 
+ class ExampleForm(Form): 
+      username = StringField('Username', [ validators.Length(min=4, max=25), validators.InputRequired() ]) 
+     email = StringField('Email', [ validators.Email() ]) 
+• Escape all user inputs rendered in HTML to prevent Cross-Site Scripting (XSS) attacks. 
+3.	Escape Output: Use proper output encoding/escaping mechanisms to prevent injection vulnerabilities, especially when displaying data in HTML templates. In Flask applicationsUse Jinja2’s built-in escaping by default:
+          <div>{{ user_input }}
+          Avoid manual string concatenation or unescaped HTML.
+4.	Implement Secure Configurations:
+ • Use secure configurations for your web application and its dependencies: Enable HTTPS to encrypt communication.
+                                                                                                                                
+• Restrict input sizes to prevent buffer overflow attacks. • Ensure Werkzeug runs in a production mode rather than debug mode. 
+5.	Use Dependency Management
+• Lock dependency versions using requirements.txt or Pipfile to ensure consistency and reduce risks: 
+Werkzeug==3.0.6 
+WTForms==3.0.0a1 
+• Avoid using * in version specifications as it may introduce untested dependencies. 
+6.	Implement Logging and Monitoring 
+• Track how dependencies are used in the application. Log errors and vulnerabilities for further analysis. 
+• Set up alerts for vulnerabilities in critical packages. 
+7.	Conduct Regular Security Scans 
+• Use automated tools like Safety, Bandit, or Snyk to find and resolve vulnerabilities early. 
+• Include these scans in the CI/CD pipeline for consistent results.
