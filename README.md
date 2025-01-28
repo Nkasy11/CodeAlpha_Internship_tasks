@@ -10,4 +10,4 @@ Choose a programming language and application. Review the code for security vuln
 
 TASK 4 
 Network Intrusion Detection
-Personal Portfolio Website System Create a personal portfolio showcasing your skills, projects, and resume. Use HTML for structure, CSS Develop a network-based intrusion detection system for styling, and add a touch of JavaScript for using tools like Snort or Suricata. Set up rules and alerts interactivity. to identify and respond to suspicious network activity. You can even visualize the detected attacks.
+using tools like Snort or Suricata. Set up rules and alerts interactivity. to identify and respond to suspicious network activity. You can even visualize the detected attacks.
